@@ -11,20 +11,27 @@ def main(argv):
     templateName = argv[0]
     programName = argv[1]
 
-    templateDir = './' + templateName
-    programNameDir = './' + programName
+    templateDir = templateName
+    programDir = programName
 
-    for subdir, _, files in os.walk(templateDir):
-        programSubdir = subdir.replace(templateDir, programNameDir)
+    for templateSubdir, _, files in os.walk(templateDir):
+        programSubdir = templateSubdir.replace(templateName, programDir)
         programSubdir = formatName(programSubdir, programName)
         print(programSubdir)
         os.mkdir(programSubdir)
-        for file in files:
-            if file not in ignoredFiles:
-                print('  ' + subdir + '/' + file)
-                fileContent = open(subdir + '/' + file, "r")
-                programFile = formatName(file, programName)
-                print(fileContent.read())
+
+        for templateFileName in files:
+            if templateFileName not in ignoredFiles:
+                templateFilePath = templateSubdir + '/' + templateFileName
+                templateFile = open(templateFilePath, "r")
+                templateFileContent = templateFile.read()
+                templateFile.close()
+
+                programFileName = formatName(templateFileName, programName)
+                programFileContent = formatName(templateFileContent, programName)
+                programFile = open(programSubdir + '/' + programFileName, "w")
+                programFile.write(programFileContent)
+                programFile.close()
 
 def formatName(value, programName):
     result = value.replace('{{name}}', programName)

@@ -4,17 +4,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "{{name.lowercase}}",
+    name: "{{name}}",
     platforms: [
         .macOS(.v10_15)
     ],
     products: [
-        .executable(name: "{{name.lowercase}}", targets: ["{{name.lowercase}}"]),
+        .executable(name: "{{name.lowercase}}", targets: ["{{name}}"]),
         .library(name: "{{name}}Lib", targets: ["{{name}}Lib"])
     ],
     targets: [
         .target(
-            name: "{{name.lowercase}}",
+            name: "{{name}}",
             dependencies: ["{{name}}Lib"]
         ),
         .target(
