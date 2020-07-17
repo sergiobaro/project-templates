@@ -1,35 +1,41 @@
 #!/usr/bin/python
 
-import sys, os, shutil
+import sys, os
 
 def main(argv):
-    ignoredFiles = ['.DS_Store']
+    fileToIgnore = ['.DS_Store']
 
     if len(argv) < 2:
-        sys.exit('missing args')
+        sys.exit('Usage: sh templates.sh <template_name> <destination_folder>')
 
     templateName = argv[0]
-    programName = argv[1]
-
     templateDir = templateName
-    programDir = programName
+    programDir, programName = os.path.split(argv[1])
 
-    for templateSubdir, _, files in os.walk(templateDir):
-        programSubdir = templateSubdir.replace(templateName, programDir)
+    act = True
+    verbose = True
+
+    for templateSubdir, _, fileNames in os.walk(templateDir):
+        programSubdir = templateSubdir.replace(templateName, programName)
         programSubdir = formatName(programSubdir, programName)
-        print(programSubdir)
-        os.mkdir(programSubdir)
+        programSubdir = os.path.join(programDir, programSubdir)
+        if verbose: print(templateSubdir + ' => ' + programSubdir)
+        if act: os.mkdir(programSubdir)
 
-        for templateFileName in files:
-            if templateFileName not in ignoredFiles:
-                templateFilePath = templateSubdir + '/' + templateFileName
-                templateFile = open(templateFilePath, "r")
-                templateFileContent = templateFile.read()
-                templateFile.close()
+        for templateFileName in fileNames:
+            if templateFileName in fileToIgnore: continue
 
-                programFileName = formatName(templateFileName, programName)
+            templateFilePath = os.path.join(templateSubdir, templateFileName)
+            templateFile = open(templateFilePath, "r")
+            templateFileContent = templateFile.read()
+            templateFile.close()
+
+            programFileName = formatName(templateFileName, programName)
+            programFilePath = os.path.join(programSubdir, programFileName)
+            if verbose: print(templateFilePath + ' => ' + programFilePath)
+            if act:
                 programFileContent = formatName(templateFileContent, programName)
-                programFile = open(programSubdir + '/' + programFileName, "w")
+                programFile = open(programFilePath, "w")
                 programFile.write(programFileContent)
                 programFile.close()
 
