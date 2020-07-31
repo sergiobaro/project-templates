@@ -6,7 +6,7 @@ def main(argv):
     fileToIgnore = ['.DS_Store']
 
     if len(argv) < 2:
-        sys.exit('Usage: sh templates.sh <template_name> <destination_folder>')
+        sys.exit('Usage: templates <template_name> <destination_folder>')
 
     templateName = argv[0]
     templateDir = templateName
